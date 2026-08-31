@@ -1,0 +1,75 @@
+{
+  "json_proto": {
+    "name": "REGULENS_SV",
+    "database": "REGULENS_DB",
+    "schema": "SEMANTIC",
+    "semanticDescription": "ReguLens governed semantic view for AML/fraud compliance demo",
+    "metadata": {"warehouse": "COMPUTE_WH"},
+    "tables": [
+      {
+        "database": "REGULENS_DB",
+        "schema": "SIGNALS",
+        "table": "ALERT",
+        "columnNames": ["ALERT_ID","ALERT_TS","ACCOUNT_ID","CUSTOMER_ID","ALERT_TYPE","SEVERITY","RISK_SCORE","SUMMARY","CONTEXT","CREATED_AT"]
+      },
+      {
+        "database": "REGULENS_DB",
+        "schema": "CURATED",
+        "table": "TXN_ENRICHED",
+        "columnNames": ["TXN_ID","TXN_TS","TXN_HOUR","ACCOUNT_ID","CUSTOMER_ID","COUNTERPARTY_ID","DIRECTION","AMOUNT","CURRENCY","CHANNEL","PAYMENT_TYPE","COUNTERPARTY_COUNTRY_CODE","COUNTERPARTY_RISK_TIER","COUNTERPARTY_BASE_RISK_SCORE","PEP_FLAG","CUSTOMER_COUNTRY_CODE","DESCRIPTION","CREATED_AT"]
+      },
+      {
+        "database": "REGULENS_DB",
+        "schema": "EVIDENCE",
+        "table": "FINDING",
+        "columnNames": ["FINDING_ID","CREATED_AT","ALERT_ID","ACCOUNT_ID","CUSTOMER_ID","TITLE","DESCRIPTION","STATUS","SEVERITY","TAGS","CONTEXT"]
+      },
+      {
+        "database": "REGULENS_DB",
+        "schema": "EVIDENCE",
+        "table": "SAR_REPORT",
+        "columnNames": ["REPORT_ID","CREATED_AT","FINDING_ID","SUBJECT_CUSTOMER_ID","SUBJECT_ACCOUNT_ID","PERIOD_START","PERIOD_END","NARRATIVE","METRICS","POLICY_CITATIONS","STATUS"]
+      },
+      {
+        "database": "REGULENS_DB",
+        "schema": "EVIDENCE",
+        "table": "EVIDENCE_ITEM",
+        "columnNames": ["EVIDENCE_ID","CREATED_AT","FINDING_ID","EVIDENCE_TYPE","OBJECT_REF","DESCRIPTION","CITATIONS"]
+      },
+      {
+        "database": "REGULENS_DB",
+        "schema": "RAW",
+        "table": "ACCOUNT",
+        "columnNames": ["ACCOUNT_ID","CUSTOMER_ID","ACCOUNT_TYPE","CURRENCY","OPEN_DATE","STATUS","CREATED_AT"]
+      },
+      {
+        "database": "REGULENS_DB",
+        "schema": "RAW",
+        "table": "CUSTOMER",
+        "columnNames": ["CUSTOMER_ID","FULL_NAME","DOB","COUNTRY_CODE","PEP_FLAG","CREATED_AT"]
+      },
+      {
+        "database": "REGULENS_DB",
+        "schema": "SIGNALS",
+        "table": "ACCOUNT_RISK_SCORES",
+        "columnNames": ["ACCOUNT_ID","SCORE_TS","WINDOW_HOURS","RISK_SCORE","REASONS","CREATED_AT"]
+      }
+    ],
+    "sqlSource": {
+      "queries": [
+        {
+          "correspondingQuestion": "Top 10 alerts by risk score in the last 24 hours",
+          "sqlText": "SELECT ALERT_ID, ALERT_TS, ACCOUNT_ID, CUSTOMER_ID, ALERT_TYPE, SEVERITY, RISK_SCORE FROM REGULENS_DB.SIGNALS.ALERT WHERE ALERT_TS >= DATEADD('hour', -24, CURRENT_TIMESTAMP()) ORDER BY RISK_SCORE DESC NULLS LAST LIMIT 10"
+        },
+        {
+          "correspondingQuestion": "How many SAR reports were created today?",
+          "sqlText": "SELECT COUNT(*) AS SAR_REPORTS_TODAY FROM REGULENS_DB.EVIDENCE.SAR_REPORT WHERE CREATED_AT >= DATE_TRUNC('day', CURRENT_TIMESTAMP())"
+        },
+        {
+          "correspondingQuestion": "For the latest SAR report, list evidence items by type",
+          "sqlText": "WITH latest AS (SELECT FINDING_ID FROM REGULENS_DB.EVIDENCE.SAR_REPORT ORDER BY CREATED_AT DESC LIMIT 1) SELECT EVIDENCE_TYPE, COUNT(*) AS N FROM REGULENS_DB.EVIDENCE.EVIDENCE_ITEM e JOIN latest l ON e.FINDING_ID = l.FINDING_ID GROUP BY 1 ORDER BY 1"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,46 @@
+﻿models:
+  orchestration: auto
+
+orchestration:
+  budget:
+    seconds: 60
+    tokens: 8000
+
+instructions:
+  system: |
+    You are ReguLens Copilot, an AML/fraud compliance assistant.
+    You help investigators understand alerts, findings, evidence, SAR reports, and relevant policy excerpts.
+  orchestration: |
+    Use regulens_data to answer questions that require structured data (alerts, findings, SARs, transactions, evidence).
+    Use policy_search to retrieve relevant policy sections when the user asks about requirements, definitions, or controls.
+    Prefer regulens_data first for questions about what happened; use policy_search when the question is about what should be done.
+  response: |
+    Be concise and operational. When citing policies, include section_id and heading.
+    If you cannot find evidence in data or policy, say what is missing.
+  sample_questions:
+    - question: What are the top 10 highest risk alerts in the last 24 hours?
+    - question: Show the latest SAR report and its status.
+    - question: For the most recent SAR, what evidence types were collected and how many of each?
+    - question: What policy sections mention suspicious activity reporting?
+
+tools:
+  - tool_spec:
+      type: cortex_analyst_text_to_sql
+      name: regulens_data
+      description: Query ReguLens alerts, findings, SAR reports, transactions, and evidence.
+  - tool_spec:
+      type: cortex_search
+      name: policy_search
+      description: Search ReguLens policy document sections by text.
+
+tool_resources:
+  regulens_data:
+    execution_environment:
+      type: warehouse
+      warehouse: COMPUTE_WH
+    semantic_view: REGULENS_DB.SEMANTIC.REGULENS_SV
+  policy_search:
+    search_service: REGULENS_DB.APP.POLICY_SEARCH_SERVICE
+    id_column: SECTION_ID
+    title_column: HEADING
+    max_results: 5

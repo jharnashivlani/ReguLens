@@ -1,0 +1,337 @@
+﻿name: REGULENS_SV
+description: ReguLens governed semantic view for AML/fraud compliance demo
+tables:
+  - name: ALERT
+    base_table:
+      database: REGULENS_DB
+      schema: SIGNALS
+      table: ALERT
+    primary_key:
+      columns:
+        - ALERT_ID
+    dimensions:
+      - name: ALERT_ID
+        expr: ALERT_ID
+        data_type: VARCHAR
+      - name: ACCOUNT_ID
+        expr: ACCOUNT_ID
+        data_type: VARCHAR
+      - name: CUSTOMER_ID
+        expr: CUSTOMER_ID
+        data_type: VARCHAR
+      - name: ALERT_TYPE
+        expr: ALERT_TYPE
+        data_type: VARCHAR
+      - name: SEVERITY
+        expr: SEVERITY
+        data_type: VARCHAR
+      - name: SUMMARY
+        expr: SUMMARY
+        data_type: VARCHAR
+      - name: CONTEXT
+        expr: CONTEXT
+        data_type: VARIANT
+    time_dimensions:
+      - name: ALERT_TS
+        expr: ALERT_TS
+        data_type: TIMESTAMP_NTZ
+      - name: CREATED_AT
+        expr: CREATED_AT
+        data_type: TIMESTAMP_NTZ
+    facts:
+      - name: RISK_SCORE
+        expr: RISK_SCORE
+        data_type: NUMBER
+  - name: TXN_ENRICHED
+    base_table:
+      database: REGULENS_DB
+      schema: CURATED
+      table: TXN_ENRICHED
+    dimensions:
+      - name: TXN_ID
+        expr: TXN_ID
+        data_type: VARCHAR
+      - name: ACCOUNT_ID
+        expr: ACCOUNT_ID
+        data_type: VARCHAR
+      - name: CUSTOMER_ID
+        expr: CUSTOMER_ID
+        data_type: VARCHAR
+      - name: COUNTERPARTY_ID
+        expr: COUNTERPARTY_ID
+        data_type: VARCHAR
+      - name: DIRECTION
+        expr: DIRECTION
+        data_type: VARCHAR
+      - name: CURRENCY
+        expr: CURRENCY
+        data_type: VARCHAR
+      - name: CHANNEL
+        expr: CHANNEL
+        data_type: VARCHAR
+      - name: PAYMENT_TYPE
+        expr: PAYMENT_TYPE
+        data_type: VARCHAR
+      - name: COUNTERPARTY_COUNTRY_CODE
+        expr: COUNTERPARTY_COUNTRY_CODE
+        data_type: VARCHAR
+      - name: COUNTERPARTY_RISK_TIER
+        expr: COUNTERPARTY_RISK_TIER
+        data_type: VARCHAR
+      - name: PEP_FLAG
+        expr: PEP_FLAG
+        data_type: BOOLEAN
+      - name: CUSTOMER_COUNTRY_CODE
+        expr: CUSTOMER_COUNTRY_CODE
+        data_type: VARCHAR
+      - name: DESCRIPTION
+        expr: DESCRIPTION
+        data_type: VARCHAR
+    time_dimensions:
+      - name: TXN_TS
+        expr: TXN_TS
+        data_type: TIMESTAMP_NTZ
+      - name: TXN_HOUR
+        expr: TXN_HOUR
+        data_type: TIMESTAMP_NTZ
+      - name: CREATED_AT
+        expr: CREATED_AT
+        data_type: TIMESTAMP_NTZ
+    facts:
+      - name: AMOUNT
+        expr: AMOUNT
+        data_type: NUMBER
+      - name: COUNTERPARTY_BASE_RISK_SCORE
+        expr: COUNTERPARTY_BASE_RISK_SCORE
+        data_type: NUMBER
+  - name: FINDING
+    base_table:
+      database: REGULENS_DB
+      schema: EVIDENCE
+      table: FINDING
+    primary_key:
+      columns:
+        - FINDING_ID
+    dimensions:
+      - name: FINDING_ID
+        expr: FINDING_ID
+        data_type: VARCHAR
+      - name: ALERT_ID
+        expr: ALERT_ID
+        data_type: VARCHAR
+      - name: ACCOUNT_ID
+        expr: ACCOUNT_ID
+        data_type: VARCHAR
+      - name: CUSTOMER_ID
+        expr: CUSTOMER_ID
+        data_type: VARCHAR
+      - name: TITLE
+        expr: TITLE
+        data_type: VARCHAR
+      - name: DESCRIPTION
+        expr: DESCRIPTION
+        data_type: VARCHAR
+      - name: STATUS
+        expr: STATUS
+        data_type: VARCHAR
+      - name: SEVERITY
+        expr: SEVERITY
+        data_type: VARCHAR
+      - name: TAGS
+        expr: TAGS
+        data_type: ARRAY
+      - name: CONTEXT
+        expr: CONTEXT
+        data_type: VARIANT
+    time_dimensions:
+      - name: CREATED_AT
+        expr: CREATED_AT
+        data_type: TIMESTAMP_NTZ
+  - name: SAR_REPORT
+    base_table:
+      database: REGULENS_DB
+      schema: EVIDENCE
+      table: SAR_REPORT
+    primary_key:
+      columns:
+        - FINDING_ID
+    dimensions:
+      - name: REPORT_ID
+        expr: REPORT_ID
+        data_type: VARCHAR
+      - name: FINDING_ID
+        expr: FINDING_ID
+        data_type: VARCHAR
+      - name: SUBJECT_CUSTOMER_ID
+        expr: SUBJECT_CUSTOMER_ID
+        data_type: VARCHAR
+      - name: SUBJECT_ACCOUNT_ID
+        expr: SUBJECT_ACCOUNT_ID
+        data_type: VARCHAR
+      - name: NARRATIVE
+        expr: NARRATIVE
+        data_type: VARCHAR
+      - name: METRICS
+        expr: METRICS
+        data_type: VARIANT
+      - name: POLICY_CITATIONS
+        expr: POLICY_CITATIONS
+        data_type: VARIANT
+      - name: STATUS
+        expr: STATUS
+        data_type: VARCHAR
+    time_dimensions:
+      - name: CREATED_AT
+        expr: CREATED_AT
+        data_type: TIMESTAMP_NTZ
+      - name: PERIOD_START
+        expr: PERIOD_START
+        data_type: TIMESTAMP_NTZ
+      - name: PERIOD_END
+        expr: PERIOD_END
+        data_type: TIMESTAMP_NTZ
+  - name: EVIDENCE_ITEM
+    base_table:
+      database: REGULENS_DB
+      schema: EVIDENCE
+      table: EVIDENCE_ITEM
+    dimensions:
+      - name: EVIDENCE_ID
+        expr: EVIDENCE_ID
+        data_type: VARCHAR
+      - name: FINDING_ID
+        expr: FINDING_ID
+        data_type: VARCHAR
+      - name: EVIDENCE_TYPE
+        expr: EVIDENCE_TYPE
+        data_type: VARCHAR
+      - name: OBJECT_REF
+        expr: OBJECT_REF
+        data_type: VARCHAR
+      - name: DESCRIPTION
+        expr: DESCRIPTION
+        data_type: VARCHAR
+      - name: CITATIONS
+        expr: CITATIONS
+        data_type: VARIANT
+    time_dimensions:
+      - name: CREATED_AT
+        expr: CREATED_AT
+        data_type: TIMESTAMP_NTZ
+  - name: _ACCOUNT
+    base_table:
+      database: REGULENS_DB
+      schema: RAW
+      table: ACCOUNT
+    primary_key:
+      columns:
+        - ACCOUNT_ID
+    dimensions:
+      - name: ACCOUNT_ID
+        expr: ACCOUNT_ID
+        data_type: VARCHAR
+      - name: CUSTOMER_ID
+        expr: CUSTOMER_ID
+        data_type: VARCHAR
+      - name: ACCOUNT_TYPE
+        expr: ACCOUNT_TYPE
+        data_type: VARCHAR
+      - name: CURRENCY
+        expr: CURRENCY
+        data_type: VARCHAR
+      - name: STATUS
+        expr: STATUS
+        data_type: VARCHAR
+    time_dimensions:
+      - name: OPEN_DATE
+        expr: OPEN_DATE
+        data_type: DATE
+      - name: CREATED_AT
+        expr: CREATED_AT
+        data_type: TIMESTAMP_NTZ
+  - name: CUSTOMER
+    base_table:
+      database: REGULENS_DB
+      schema: RAW
+      table: CUSTOMER
+    primary_key:
+      columns:
+        - CUSTOMER_ID
+    dimensions:
+      - name: CUSTOMER_ID
+        expr: CUSTOMER_ID
+        data_type: VARCHAR
+      - name: FULL_NAME
+        expr: FULL_NAME
+        data_type: VARCHAR
+      - name: COUNTRY_CODE
+        expr: COUNTRY_CODE
+        data_type: VARCHAR
+      - name: PEP_FLAG
+        expr: PEP_FLAG
+        data_type: BOOLEAN
+    time_dimensions:
+      - name: DOB
+        expr: DOB
+        data_type: DATE
+      - name: CREATED_AT
+        expr: CREATED_AT
+        data_type: TIMESTAMP_NTZ
+  - name: ACCOUNT_RISK_SCORES
+    base_table:
+      database: REGULENS_DB
+      schema: SIGNALS
+      table: ACCOUNT_RISK_SCORES
+    dimensions:
+      - name: ACCOUNT_ID
+        expr: ACCOUNT_ID
+        data_type: VARCHAR
+      - name: WINDOW_HOURS
+        expr: WINDOW_HOURS
+        data_type: NUMBER
+      - name: REASONS
+        expr: REASONS
+        data_type: VARIANT
+    time_dimensions:
+      - name: SCORE_TS
+        expr: SCORE_TS
+        data_type: TIMESTAMP_NTZ
+      - name: CREATED_AT
+        expr: CREATED_AT
+        data_type: TIMESTAMP_NTZ
+    facts:
+      - name: RISK_SCORE
+        expr: RISK_SCORE
+        data_type: NUMBER
+relationships:
+  - name: EVIDENCE_ITEM_TO_SAR_REPORT
+    left_table: EVIDENCE_ITEM
+    right_table: SAR_REPORT
+    join_type: inner
+    relationship_type: many_to_one
+    relationship_columns:
+      - left_column: FINDING_ID
+        right_column: FINDING_ID
+verified_queries:
+  - name: 0;1
+    question: What are the top 10 highest risk alerts from the last 24 hours?
+    sql: SELECT ALERT_ID, ALERT_TS, ACCOUNT_ID, CUSTOMER_ID, ALERT_TYPE, SEVERITY,
+      RISK_SCORE FROM alert WHERE ALERT_TS >= DATEADD(HOUR, -24, CURRENT_TIMESTAMP())
+      ORDER BY RISK_SCORE DESC NULLS LAST LIMIT 10
+    verified_at: 1786980729
+    verified_by: Semantic Model Generator
+  - name: 1;1
+    question: How many SAR reports were created today?
+    sql: SELECT COUNT(*) AS SAR_REPORTS_TODAY FROM sar_report WHERE CREATED_AT >=
+      DATE_TRUNC('DAY', CURRENT_TIMESTAMP())
+    verified_at: 1786980729
+    verified_by: Semantic Model Generator
+  - name: 2;1
+    question: What types of evidence were collected for the most recent SAR report
+      and how many of each type?
+    sql: WITH latest AS (SELECT FINDING_ID FROM sar_report ORDER BY CREATED_AT DESC
+      LIMIT 1) SELECT EVIDENCE_TYPE, COUNT(*) AS N FROM evidence_item AS e JOIN latest
+      AS l ON e.FINDING_ID = l.FINDING_ID GROUP BY 1 ORDER BY 1
+    verified_at: 1786980729
+    verified_by: Semantic Model Generator
+

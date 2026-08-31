@@ -1,0 +1,15 @@
+{
+  "name": "REGULENS_SV",
+  "database": "REGULENS_DB",
+  "schema": "SEMANTIC",
+  "tables": [
+    {"fqn": "REGULENS_DB.SIGNALS.ALERT"},
+    {"fqn": "REGULENS_DB.CURATED.TXN_ENRICHED"},
+    {"fqn": "REGULENS_DB.EVIDENCE.FINDING"},
+    {"fqn": "REGULENS_DB.EVIDENCE.SAR_REPORT"},
+    {"fqn": "REGULENS_DB.EVIDENCE.EVIDENCE_ITEM"},
+    {"fqn": "REGULENS_DB.SIGNALS.ACCOUNT_RISK_SCORES"},
+    {"fqn": "REGULENS_DB.RAW.ACCOUNT"},
+    {"fqn": "REGULENS_DB.RAW.CUSTOMER"}
+  ]
+}

@@ -1,0 +1,12 @@
+version: 1
+artifacts:
+  - path: ..\regulens_sv.sv.yaml
+    type: semantic_view
+    targets:
+      default:
+        object: REGULENS_DB.SEMANTIC.REGULENS_SV
+  - path: cortex_agent.agent.yaml
+    type: cortex_agent
+    targets:
+      default:
+        object: REGULENS_DB.APP.REGULENS_AGENT

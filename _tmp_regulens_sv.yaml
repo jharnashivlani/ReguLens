@@ -1,0 +1,1 @@
+{"json_proto":{"errors":[{"message":"No valid source provided to generate semantic model. Please provide tables/questions or an external file.","code":"BAD_REQUEST"}],"extensions":{"next_stage":"finished","total_stages":0.0,"stage_name":"finished","request_id":"afbc9404-9938-400e-8275-d0658427563c","stage_number":0.0}}}
