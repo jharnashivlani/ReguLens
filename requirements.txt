@@ -1,2 +1,0 @@
-# No additional dependencies.
-# This app relies on packages pre-installed in the Streamlit container runtime.
